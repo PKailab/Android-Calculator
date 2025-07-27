@@ -1,0 +1,32 @@
+image: gitpod/workspace-full-vnc
+
+tasks:
+  - name: Setup Android Environment
+    init: |
+      sudo apt-get update && sudo apt-get install -y openjdk-17-jdk wget unzip
+      wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip
+      mkdir -p android-sdk/cmdline-tools
+      unzip -q commandlinetools-linux-9477386_latest.zip -d ./cmdline-tools
+      mv ./cmdline-tools/cmdline-tools ./android-sdk/cmdline-tools/latest
+      rm commandlinetools-linux-9477386_latest.zip
+      yes | sdkmanager --sdk_root=./android-sdk --licenses > /dev/null
+      echo 'export ANDROID_SDK_ROOT=$(pwd)/android-sdk' >> ~/.bashrc
+      echo 'export PATH=$PATH:$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/platform-tools' >> ~/.bashrc
+      source ~/.bashrc
+    command: |
+      chmod +x ./gradlew
+      echo "✅ Android Environment is ready."
+
+ports:
+  - port: 6080
+    onOpen: open-browser
+    visibility: public
+  
+  - port: 5037
+    onOpen: ignore
+  - port: 5554
+    onOpen: ignore
+  - port: 5555
+    onOpen: ignore
+  - port: 8554
+    onOpen: ignore
